@@ -7,6 +7,7 @@ import { AddressService } from '../service/address/AddressService'
 import { AddressQuery } from '../api/types'
 import { RateLimiterMemory } from 'rate-limiter-flexible'
 import BitcoinCore from '../service/bitcoin/BitcoinCore'
+import { Flow } from '../types/event'
 export class WebSocketAPI {
   private dataSourceMapping: RSKDatasource
   private lastPrice: LastPrice
@@ -75,7 +76,9 @@ export class WebSocketAPI {
           const profiler = this.tracker.get(key) || new Profiler(address, dataSource, this.lastPrice, provider)
           const newSuscription = this.tracker.has(key)
           this.tracker.set(key, profiler)
-          const data = await this.addressService.getAddressDetails({ chainId, address, blockNumber, limit: '' })
+          const data = await this.addressService.getAddressDetails(
+            { chainId, address, blockNumber, limit: '', flow: Flow.ALL }
+          )
           socket.emit('init', data)
 
           profiler.on('balances', (data) => {

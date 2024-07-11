@@ -346,6 +346,16 @@ module.exports = {
             schema: {
               type: 'string'
             }
+          },
+          {
+            name: 'flow',
+            in: 'query',
+            description: 'Filter by incoming or outgoing transactions',
+            required: false,
+            schema: {
+              type: 'string',
+              enum: ['all', 'to', 'from']
+            }
           }
         ],
         responses: {

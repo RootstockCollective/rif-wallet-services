@@ -55,7 +55,7 @@ describe('transactions', () => {
       .expect('Content-Type', /json/)
       .expect(200)
     expect(JSON.parse(text)).toEqual(transactionWithEventResponse)
-    expect(getTransactionsByAddressMock).toHaveBeenCalledWith(mockAddress, '50', undefined, undefined, '0')
+    expect(getTransactionsByAddressMock).toHaveBeenCalledWith(mockAddress, '50', undefined, undefined, '0', 'all')
   })
 })
 

@@ -3,6 +3,7 @@ import { isMyTransaction } from '../transaction/utils'
 import { IApiTransactions, IEvent, IInternalTransaction } from '../../rskExplorerApi/types'
 import { LastPrice } from '../price/lastPrice'
 import { fromApiToRtbcBalance } from '../../rskExplorerApi/utils'
+import { Flow } from '../../types/event'
 
 interface AddressServiceDependencies {
   dataSourceMapping: RSKDatasource
@@ -16,7 +17,8 @@ interface GetTransactionsByAddressFunction {
   chainId: string
   prev?: string
   next?: string
-  blockNumber: string
+  blockNumber: string,
+  flow: Flow
 }
 
 interface GetPricesFunction {
@@ -60,7 +62,7 @@ export class AddressService {
   }
 
   async getTransactionsByAddress (
-    { chainId, address, limit, next, prev, blockNumber }: GetTransactionsByAddressFunction
+    { chainId, address, limit, next, prev, blockNumber, flow }: GetTransactionsByAddressFunction
   ) {
     const dataSource = this.dataSourceMapping[chainId]
     /* A transaction has the following structure { to: string, from: string }
@@ -68,7 +70,7 @@ export class AddressService {
       * (such as RBTC).
     */
     const transactions: {data: IApiTransactions[], prev: string, next: string} =
-      await dataSource.getTransactionsByAddress(address, limit, prev, next, blockNumber)
+      await dataSource.getTransactionsByAddress(address, limit, prev, next, blockNumber, flow)
 
     /* We query events to find transactions when we send or receive a token(ERC20)
       * such as RIF,RDOC
@@ -77,8 +79,8 @@ export class AddressService {
       * Finally, we filter by blocknumber and duplicates
     */
     const hashes: string[] = await Promise.all([
-      dataSource.getEventsByAddress(address, limit as string),
-      dataSource.getInternalTransactionByAddress(address, limit as string)
+      dataSource.getEventsByAddress(address, limit as string, flow as Flow),
+      dataSource.getInternalTransactionByAddress(address, limit as string, flow as Flow)
     ])
       .then((promises) => {
         return promises.flat()
@@ -92,7 +94,6 @@ export class AddressService {
       .catch(() => [])
 
     const result = await Promise.all(hashes.map(hash => dataSource.getTransaction(hash)))
-
     return {
       prev: transactions.prev,
       next: transactions.next,
@@ -124,12 +125,13 @@ export class AddressService {
     blockNumber,
     limit,
     prev,
-    next
+    next,
+    flow
   }: GetBalancesTransactionsPricesByAddress) {
     const [prices, tokens, transactions] = await Promise.all([
       this.getLatestPrices(),
       this.getTokensByAddress({ chainId, address }),
-      this.getTransactionsByAddress({ chainId, address, blockNumber, limit, prev, next })
+      this.getTransactionsByAddress({ chainId, address, blockNumber, limit, prev, next, flow })
     ])
     return {
       prices,

@@ -2,6 +2,7 @@ import _axios from 'axios'
 import { ethers } from 'ethers'
 import BitcoinCore from '../service/bitcoin/BitcoinCore'
 import { GetEventLogsByAddressAndTopic0 } from '../service/address/AddressService'
+import { Flow } from '../types/event'
 
 export abstract class DataSource {
   readonly url: string
@@ -17,14 +18,15 @@ export abstract class DataSource {
   abstract getTokens();
   abstract getTokensByAddress(address: string);
   abstract getRbtcBalanceByAddress(address: string);
-  abstract getEventsByAddress(address: string, limit?: string);
+  abstract getEventsByAddress(address: string, limit?: string, flow?: Flow);
   abstract getTransaction(hash: string);
-  abstract getInternalTransactionByAddress(address: string, limit?: string);
+  abstract getInternalTransactionByAddress(address: string, limit?: string, flow?: Flow);
   abstract getTransactionsByAddress(address:string,
     limit?: string,
     prev?: string,
     next?: string,
-    blockNumber?: string);
+    blockNumber?: string,
+    flow?: Flow);
 
   abstract getNft(address: string);
   abstract getNftOwnedByAddress(address: string, nft: string);

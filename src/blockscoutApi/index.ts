@@ -12,6 +12,7 @@ import {
   fromApiToTokenWithBalance, fromApiToTokens, fromApiToTransaction
 } from './utils'
 import { GetEventLogsByAddressAndTopic0 } from '../service/address/AddressService'
+import { Flow } from '../types/event'
 
 export class BlockscoutAPI extends DataSource {
   private chainId: number
@@ -50,18 +51,19 @@ export class BlockscoutAPI extends DataSource {
       .catch(this.errorHandling)
   }
 
-  async getEventsByAddress (address: string) {
+  async getEventsByAddress (address: string, flow: Flow = Flow.ALL) {
     const params = {
       module: 'account',
       action: 'tokentx',
       address: address.toLowerCase()
     }
     return this.axios?.get<ServerResponse<TokenTransferApi>>(`${this.url}`, { params })
-      .then(response =>
-        response.data.result
-          .map(tokenTranfer => {
-            return fromApiToTEvents(tokenTranfer)
-          }))
+      .then(response => response.data.result.filter(event => {
+        if (flow === Flow.ALL) return event
+        return event[flow].toLowerCase() === address
+      }))
+      .then(response => response
+        .map(tokenTranfer => fromApiToTEvents(tokenTranfer)))
       .catch(this.errorHandling)
   }
 
@@ -72,19 +74,35 @@ export class BlockscoutAPI extends DataSource {
       .catch(this.errorHandling)
   }
 
-  getInternalTransactionByAddress (address: string) {
+  getInternalTransactionByAddress (address: string, flow: Flow) {
+    const params = flow === Flow.ALL ? {} : { filter: flow }
+
     return this.axios?.get<InternalTransactionResponse>(
-      `${this.url}/v2/addresses/${address.toLowerCase()}/internal-transactions`
+      `${this.url}/v2/addresses/${address.toLowerCase()}/internal-transactions`,
+      { params }
     )
       .then(response => response.data.items.map(fromApiToInternalTransaction))
       .catch(this.errorHandling)
   }
 
-  getTransactionsByAddress (address: string) {
+  getTransactionsByAddress (address:string,
+    _limit?: string,
+    _prev?: string,
+    next?: string,
+    _blockNumber?: string,
+    flow?: Flow) {
+    const params = {
+      ...(next ? { block_number: next, index: 0, items_count: 50 } : {}),
+      ...(flow === Flow.ALL ? {} : { filter: flow })
+    }
     return this.axios?.get<TransactionsServerResponse>(
-      `${this.url}/v2/addresses/${address.toLowerCase()}/transactions`
+      `${this.url}/v2/addresses/${address.toLowerCase()}/transactions`,
+      { params }
     )
-      .then(response => ({ data: response.data.items.map(fromApiToTransaction) }))
+      .then(response => ({
+        data: response.data.items.map(fromApiToTransaction),
+        next: response.data.next_page_params?.block_number
+      }))
       .catch(this.errorHandling)
   }
 

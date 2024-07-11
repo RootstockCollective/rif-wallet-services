@@ -11,6 +11,7 @@ import { ValidationError, object, string } from 'yup'
 import { utils } from 'ethers'
 import { AddressService } from '../service/address/AddressService'
 import { supportedFiat } from '../coinmarketcap/support'
+import { Flow } from '../types/event'
 
 interface HttpsAPIDependencies {
   app: Express,
@@ -44,20 +45,21 @@ export class HttpsAPI {
   }
 
   init () : void {
-    const chainIdSchema = object({
-      chainId: string().optional()
-        .trim()
-        .oneOf(Object.keys(this.dataSourceMapping), 'The current chainId is not supported')
-    })
     const addressSchema = object({
       address: string().required('An address is invalid')
         .trim()
         .transform(address => utils.isAddress(address.toLowerCase()) ? address : '')
-    }).required()
-    const currencySchema = object({
+    })
+    const schema = object({
+      chainId: string().optional()
+        .trim()
+        .oneOf(Object.keys(this.dataSourceMapping), 'The current chainId is not supported'),
       convert: string().optional()
         .trim()
-        .oneOf(supportedFiat, 'The current currency is not supported')
+        .oneOf(supportedFiat, 'The current currency is not supported'),
+      flow: string().optional()
+        .trim()
+        .oneOf([Flow.ALL, Flow.FROM, Flow.TO], 'The transaction filter is invalid')
     })
 
     const whilelist = [
@@ -79,7 +81,7 @@ export class HttpsAPI {
 
     this.app.get('/tokens', ({ query: { chainId = '31' } }: Request, res: Response, next: NextFunction) => {
       try {
-        chainIdSchema.validateSync({ chainId })
+        schema.validateSync({ chainId })
         return this
           .dataSourceMapping[chainId as string].getTokens()
           .then(this.responseJsonOk(res))
@@ -93,8 +95,8 @@ export class HttpsAPI {
       '/address/:address/tokens',
       async ({ params: { address }, query: { chainId = '31' } }: Request, res: Response, next: NextFunction) => {
         try {
-          chainIdSchema.validateSync({ chainId })
           addressSchema.validateSync({ address })
+          schema.validateSync({ chainId })
           const balance = await this.addressService.getTokensByAddress({
             chainId: chainId as string,
             address: address as string
@@ -110,8 +112,8 @@ export class HttpsAPI {
       '/address/:address/events',
       ({ params: { address }, query: { chainId = '31' } }: Request, res: Response, next: NextFunction) => {
         try {
-          chainIdSchema.validateSync({ chainId })
           addressSchema.validateSync({ address })
+          schema.validateSync({ chainId })
           return this
             .dataSourceMapping[chainId as string].getEventsByAddress(address)
             .then(this.responseJsonOk(res))
@@ -124,11 +126,14 @@ export class HttpsAPI {
 
     this.app.get(
       '/address/:address/transactions',
-      async ({ params: { address }, query: { limit, prev, next, chainId = '31', blockNumber = '0' } }: Request,
-        res: Response, nextFunction: NextFunction) => {
+      async ({
+        params: { address },
+        query: { limit, prev, next, chainId = '31', blockNumber = '0', flow = Flow.ALL }
+      }: Request,
+      res: Response, nextFunction: NextFunction) => {
         try {
-          chainIdSchema.validateSync({ chainId })
           addressSchema.validateSync({ address })
+          schema.validateSync({ chainId, flow })
 
           const transactions = await this.addressService.getTransactionsByAddress({
             address: address as string,
@@ -136,7 +141,8 @@ export class HttpsAPI {
             limit: limit as string,
             prev: prev as string,
             next: next as string,
-            blockNumber: blockNumber as string
+            blockNumber: blockNumber as string,
+            flow: flow as Flow
           }).catch(nextFunction)
           return this.responseJsonOk(res)(transactions)
         } catch (e) {
@@ -149,7 +155,7 @@ export class HttpsAPI {
       async ({ params: { address }, query: { chainId = '31' } } : Request, res: Response,
         nextFunction: NextFunction) => {
         try {
-          chainIdSchema.validateSync({ chainId })
+          schema.validateSync({ chainId })
           addressSchema.validateSync({ address })
           const nft = await this.addressService.getNftInfo({ chainId: chainId as string, address }).catch(nextFunction)
           return this.responseJsonOk(res)(nft)
@@ -162,7 +168,7 @@ export class HttpsAPI {
       async ({ params: { nft, address }, query: { chainId = '31' } } : Request, res: Response,
         nextFunction: NextFunction) => {
         try {
-          chainIdSchema.validateSync({ chainId })
+          schema.validateSync({ chainId })
           addressSchema.validateSync({ address })
           const nftInfo = await this.addressService
             .getNftOwnedByAddress({ chainId: chainId as string, address, nftAddress: nft })
@@ -177,7 +183,7 @@ export class HttpsAPI {
       async ({ params: { address }, query: { chainId = '31', topic0, fromBlock, toBlock } } : Request, res: Response,
         nextFunction: NextFunction) => {
         try {
-          chainIdSchema.validateSync({ chainId })
+          schema.validateSync({ chainId })
           addressSchema.validateSync({ address })
           const result = await this.addressService
             .getEventLogsByAddressAndTopic0({
@@ -199,7 +205,7 @@ export class HttpsAPI {
       async (req: Request<{}, {}, {}, PricesQueryParams>, res: Response) => {
         try {
           const { convert = 'USD', addresses = '' } = req.query
-          currencySchema.validateSync({ convert })
+          schema.validateSync({ convert })
           addresses.split(',').forEach(address => addressSchema.validateSync({ address }))
           const prices = await this.addressService.getPrices({
             addresses,
@@ -228,17 +234,18 @@ export class HttpsAPI {
       '/address/:address',
       async (req, res) => {
         try {
-          const { limit, prev, next, chainId = '31', blockNumber = '0' } = req.query
+          const { limit, prev, next, chainId = '31', blockNumber = '0', flow = Flow.ALL } = req.query
           const { address } = req.params
-          chainIdSchema.validateSync({ chainId })
           addressSchema.validateSync({ address })
+          schema.validateSync({ chainId })
           const data = await this.addressService.getAddressDetails({
             chainId: chainId as string,
             address,
             blockNumber: blockNumber as string,
             limit: limit as string,
             prev: prev as string,
-            next: next as string
+            next: next as string,
+            flow: flow as Flow
           })
           return this.responseJsonOk(res)(data)
         } catch (error) {
