@@ -1,5 +1,8 @@
 FROM node:18-slim
 
+ARG arg_profile
+ENV PROFILE="$arg_profile"
+
 WORKDIR /app
 
 COPY package.json ./
