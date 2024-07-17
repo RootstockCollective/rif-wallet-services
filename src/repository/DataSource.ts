@@ -37,7 +37,7 @@ export type RSKDatasource = {
 }
 
 export type RSKNodeProvider = {
-  [key: string] : ethers.providers.JsonRpcProvider
+  [key: string] : ethers.JsonRpcProvider
 }
 
 export type BitcoinDatasource = {

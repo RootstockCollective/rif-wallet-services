@@ -72,7 +72,7 @@ async function main () {
       BLOCKBOOK_URL: network.BLOCKBOOK_URL,
       CYPHER_ESTIMATE_FEE_URL: network.CYPHER_ESTIMATE_FEE_URL
     })
-    nodeProvider[network.ID] = new ethers.providers.JsonRpcProvider(network.NODE_URL)
+    nodeProvider[network.ID] = new ethers.JsonRpcProvider(network.NODE_URL)
   })
   const coinMarketCapApi = new CoinMarketCapAPI(
     environment.COIN_MARKET_CAP_URL,

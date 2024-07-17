@@ -17,7 +17,7 @@ export class Profiler extends Emitter {
   tokenTransferProfiler: TokenTransferProfiler
 
   constructor (address: string, dataSource: DataSource,
-    lastPrice: LastPrice, provider: ethers.providers.JsonRpcProvider) {
+    lastPrice: LastPrice, provider: ethers.JsonRpcProvider) {
     super()
     this.address = address
 

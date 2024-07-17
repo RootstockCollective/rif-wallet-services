@@ -109,7 +109,7 @@ export class AddressService {
     const balance = await this.providerMapping[chainId].getBalance(address.toLowerCase())
     const balances = await Promise.all([
       this.dataSourceMapping[chainId].getTokensByAddress(address),
-      fromApiToRtbcBalance(balance.toHexString(), parseInt(chainId))
+      fromApiToRtbcBalance(`0x0${balance.toString(16)}`, parseInt(chainId))
     ])
     return balances.flat()
   }

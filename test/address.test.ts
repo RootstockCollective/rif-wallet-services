@@ -8,7 +8,7 @@ import {
 } from './mockAddressResponses'
 import BitcoinCore from '../src/service/bitcoin/BitcoinCore'
 import { LastPrice } from '../src/service/price/lastPrice'
-import { MockProvider } from './MockProvider'
+import { getBalance } from './MockProvider'
 import { AddressService } from '../src/service/address/AddressService'
 
 const setupTestApi = (dataSourceMapping: RSKDatasource) => {
@@ -19,7 +19,10 @@ const setupTestApi = (dataSourceMapping: RSKDatasource) => {
     CYPHER_ESTIMATE_FEE_URL: process.env.CYPHER_ESTIMATE_FEE_URL || ''
   })
   const providerMapping = {}
-  providerMapping['31'] = new MockProvider(31)
+  const providerMock = {
+    getBalance
+  }
+  providerMapping['31'] = providerMock
   const lastPrice = new LastPrice()
   const addressService = new AddressService({
     dataSourceMapping,

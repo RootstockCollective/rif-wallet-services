@@ -12,7 +12,7 @@ import { pricesResponse } from './mockPriceResponses'
 import { LastPrice } from '../src/service/price/lastPrice'
 import { PriceCollector } from '../src/service/price/priceCollector'
 import { Server } from 'socket.io'
-import { MockProvider } from './MockProvider'
+import { getBalance } from './MockProvider'
 import { AddressService } from '../src/service/address/AddressService'
 
 describe('web socket', () => {
@@ -54,7 +54,10 @@ describe('web socket', () => {
     const dataSourceMapping = {}
     dataSourceMapping['31'] = rskExplorerApiMock as any
     const providerMapping = {}
-    providerMapping['31'] = new MockProvider(31)
+    const providerMock = {
+      getBalance
+    }
+    providerMapping['31'] = providerMock
     const bitcoinMapping = {}
     const addressService = new AddressService({
       dataSourceMapping,

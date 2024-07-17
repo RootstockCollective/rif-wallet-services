@@ -6,9 +6,9 @@ import { PollingProvider } from '../AbstractPollingProvider'
 
 export class RbtcBalanceProvider extends PollingProvider<Event> {
   private dataSource: DataSource
-  private provider: ethers.providers.JsonRpcProvider
+  private provider: ethers.JsonRpcProvider
 
-  constructor (address: string, dataSource: DataSource, provider: ethers.providers.JsonRpcProvider) {
+  constructor (address: string, dataSource: DataSource, provider: ethers.JsonRpcProvider) {
     super(address)
     this.dataSource = dataSource
     this.provider = provider
@@ -16,14 +16,14 @@ export class RbtcBalanceProvider extends PollingProvider<Event> {
 
   async poll () {
     return await this.provider.getBalance(this.address.toLowerCase())
-      .then(balance => fromApiToRtbcBalance(balance.toHexString(), parseInt(this.dataSource.id)))
+      .then(balance => fromApiToRtbcBalance(balance.toString(16), parseInt(this.dataSource.id)))
       .then(rbtcBalance => [{ type: 'newBalance', payload: rbtcBalance }])
       .catch(() => [])
   }
 
   public async getCurrentBalance () {
     return await this.provider.getBalance(this.address.toLowerCase())
-      .then(balance => fromApiToRtbcBalance(balance.toHexString(), parseInt(this.dataSource.id)))
+      .then(balance => fromApiToRtbcBalance(balance.toString(16), parseInt(this.dataSource.id)))
       .catch(() => fromApiToRtbcBalance('0', parseInt(this.dataSource.id)))
   }
 }
