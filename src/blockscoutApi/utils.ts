@@ -225,7 +225,7 @@ export const fromApiToNft = (token: TokenInfoResponse): INft => ({
 
 export const fromApiToNftOwner = (address: string, nfts: NFTInstanceResponse[]): INftOwner[] => (
   nfts
-    .filter(nft => nft.owner.hash === address)
+    .filter(nft => nft.owner.hash.toLowerCase() === address.toLowerCase())
     .map(nft => ({
       owner: nft.owner.hash,
       token: fromApiToNft(nft.token),
