@@ -85,7 +85,10 @@ export class BlockscoutAPI extends DataSource {
       `${this.url}/v2/addresses/${address.toLowerCase()}/transactions`
     )
       .then(response => ({ data: response.data.items.map(fromApiToTransaction) }))
-      .catch(this.errorHandling)
+      .catch(e => {
+        console.error(e)
+        return { data: [] }
+      })
   }
 
   getNft (address: string) {
@@ -129,7 +132,7 @@ export class BlockscoutAPI extends DataSource {
       // @ts-ignore ignored because it's using never as type
       const lastTx = tx.data.pop() // The last tx is the first transaction
 
-      if (lastTx) fromBlockToUse = lastTx.blockNumber
+      if (lastTx) fromBlockToUse = lastTx.blockNumber.toString()
     }
 
     if (!fromBlockToUse) return []
