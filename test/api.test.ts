@@ -10,7 +10,7 @@ import { LastPrice } from '../src/service/price/lastPrice'
 import { PriceCollector } from '../src/service/price/priceCollector'
 import { MockPrice } from '../src/service/price/mockPrice'
 import BitcoinCore from '../src/service/bitcoin/BitcoinCore'
-import { MockProvider } from './MockProvider'
+import { getBalance } from './MockProvider'
 import { AddressService } from '../src/service/address/AddressService'
 let priceCollector
 
@@ -29,7 +29,10 @@ const setupTestApi = (coinMarketCapApi: CoinMarketCapAPI) => {
     CYPHER_ESTIMATE_FEE_URL: process.env.CYPHER_ESTIMATE_FEE_URL || ''
   })
   const providerMapping = {}
-  providerMapping['31'] = new MockProvider(31)
+  const providerMock = {
+    getBalance
+  }
+  providerMapping['31'] = providerMock
   const dataSourceMapping = { 31: {} } as any
   const addressService = new AddressService({
     dataSourceMapping,

@@ -8,9 +8,9 @@ import swaggerUI from 'swagger-ui-express'
 import OpenApi from '../api/openapi'
 import BitcoinRouter from '../service/bitcoin/BitcoinRouter'
 import { ValidationError, object, string } from 'yup'
-import { utils } from 'ethers'
 import { AddressService } from '../service/address/AddressService'
 import { supportedFiat } from '../coinmarketcap/support'
+import { ethers } from 'ethers'
 
 interface HttpsAPIDependencies {
   app: Express,
@@ -52,7 +52,7 @@ export class HttpsAPI {
     const addressSchema = object({
       address: string().required('An address is invalid')
         .trim()
-        .transform(address => utils.isAddress(address.toLowerCase()) ? address : '')
+        .transform(address => ethers.isAddress(address.toLowerCase()) ? address : '')
     }).required()
     const currencySchema = object({
       convert: string().optional()

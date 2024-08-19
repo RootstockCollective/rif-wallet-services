@@ -8,7 +8,7 @@ export class RbtcBalanceProfiler extends Emitter {
   private rbtcBalanceProvider: RbtcBalanceProvider
   private currentBalance = {}
 
-  constructor (address: string, dataSource: DataSource, provider: ethers.providers.JsonRpcProvider) {
+  constructor (address: string, dataSource: DataSource, provider: ethers.JsonRpcProvider) {
     super()
     this.address = address
     this.rbtcBalanceProvider = new RbtcBalanceProvider(this.address, dataSource, provider)
