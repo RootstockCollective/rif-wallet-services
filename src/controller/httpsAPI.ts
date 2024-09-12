@@ -61,11 +61,8 @@ export class HttpsAPI {
     })
 
     const whilelist = [
-      'https://dapp.testnet.dao.rif.technology',
-      'https://dapp.mainnet.dao.rif.technology',
-      'https://rif-wallet-services.testnet.rifcomputing.net',
-      'https://dao-backend.testnet.rifcomputing.net',
-      'https://frontend.testnet.dao.rif.technology'
+      'https://rws.app.rootstockcollective.xyz',
+      'https://app.rootstockcollective.xyz'
     ]
     this.app.use(cors({
       origin: (origin, callback) => {
