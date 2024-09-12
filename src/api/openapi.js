@@ -3,7 +3,7 @@ module.exports = {
   info: {
     title: 'Rif Wallet Services',
     version: '1.0.1',
-    description: '[Repository](https://github.com/rsksmart/rif-wallet-services)'
+    description: '[Repository](https://github.com/RootstockCollective/rif-wallet-services)'
   },
   servers: [
     {
@@ -11,11 +11,7 @@ module.exports = {
       description: 'Local server'
     },
     {
-      url: 'https://rif-wallet-services.testnet.rifcomputing.net',
-      description: 'Wallet TestNet'
-    },
-    {
-      url: 'https://dao-backend.testnet.rifcomputing.net',
+      url: 'https://rws.app.rootstockcollective.xyz',
       description: 'DAO TestNet'
     }
   ],
