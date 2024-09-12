@@ -64,7 +64,7 @@ export class HttpsAPI {
       'https://rws.app.rootstockcollective.xyz',
       'https://app.rootstockcollective.xyz',
       'https://testnet.app.rootstockcollective.xyz',
-      'https://dev.app.rootstockcollective.xyz',
+      'https://dev.app.rootstockcollective.xyz'
     ]
     this.app.use(cors({
       origin: (origin, callback) => {
