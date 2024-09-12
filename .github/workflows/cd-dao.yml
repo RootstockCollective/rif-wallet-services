@@ -7,11 +7,11 @@ on:
 
 env:
   AWS_REGION: us-east-1                
-  ECR_REPOSITORY: rif-wallet-services-testnet
-  ECS_SERVICE: dao-wallet-services-testnet
-  ECS_CLUSTER: dao-rif-wallet-services-testnet
-  ECS_TASK_DEFINITION: dao-rif-wallet-services-testnet
-  CONTAINER_NAME: dao-rif-wallet-services-testnet
+  ECR_REPOSITORY: dao-frontend-rws-prod
+  ECS_CLUSTER: dao-frontend
+  ECS_SERVICE: dao-frontend-rws-prod
+  ECS_TASK_DEFINITION: dao-frontend-rws-prod
+  CONTAINER_NAME: dao-frontend-rws-prod
 
   PROFILE: dao
 
@@ -30,7 +30,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.ROLE_DAO_TESTNET_ARN }}
+          role-to-assume: ${{ secrets.AWS_LOGIN_PROD_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
