@@ -5,11 +5,11 @@ The RootstockCollective team and community take security vulnerabilities very se
 
 ## Responsible Disclosure
 
-For all security related issues, use the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/RootstockCollective/dao-frontend/security/advisories/new) tab.
+For all security related issues, use the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/RootstockCollective/dao-backend-services/security/advisories/new) tab.
 
 The RootstockCollective team will send a response indicating the next steps in handling your report. After the initial reply to your report, the security team will keep you informed of the progress towards a fix and full announcement, and may ask for additional information or guidance.
 
-**Ensure the bug was not already reported** by searching on GitHub under [Issues](https://github.com/RootstockCollective/dao-frontend/issues).
+**Ensure the bug was not already reported** by searching on GitHub under [Issues](https://github.com/RootstockCollective/dao-backend-services/issues).
 
 ## Vulnerability Handling
 
