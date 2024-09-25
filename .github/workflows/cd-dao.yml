@@ -1,9 +1,8 @@
 name: Deploy to Amazon ECS
 
 on:
-  push:
-    branches:
-      - develop 
+  release:
+    types: [released]
 
 env:
   AWS_REGION: us-east-1                
