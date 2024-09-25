@@ -385,6 +385,99 @@ module.exports = {
         }
       }
     },
+    '/address/{address}/eventsByTopic0': {
+      get: {
+        summary: 'Get the events by address and topic',
+        tags: [
+          'Events'
+        ],
+        parameters: [
+          {
+            name: 'address',
+            in: 'path',
+            required: true,
+            description: 'An address',
+            schema: {
+              type: 'string'
+            },
+            example: '0x2217E4D3ae0a6E30075d1b5A7B8C1520e8009F49'
+          },
+          {
+            name: 'chainId',
+            in: 'query',
+            description: 'Chain Id identifies the network',
+            required: false,
+            schema: {
+              type: 'string',
+              default: '31'
+            },
+            examples: {
+              'RSK Testnet': {
+                value: '31'
+              },
+              'RSK Mainnet': {
+                value: '30'
+              }
+            }
+          },
+          {
+            name: 'topic0',
+            in: 'query',
+            required: true,
+            description: 'Signature event hash',
+            schema: {
+              type: 'string'
+            },
+            example: '0x7d84a6263ae0d98d3329bd7b46bb4e8d6f98cd35a7adb45c274c8b7fd5ebd5e0'
+          },
+          {
+            name: 'fromBlock',
+            in: 'query',
+            required: false,
+            description: 'Start Block',
+            schema: {
+              type: 'string'
+            },
+            example: '60034943'
+          },
+          {
+            name: 'toBlock',
+            in: 'query',
+            required: false,
+            description: 'End Block',
+            schema: {
+              type: 'string'
+            },
+            example: '60039990'
+          }
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    $ref: '#/components/schemas/EventLog'
+                  }
+                }
+              }
+            }
+          },
+          400: {
+            description: 'Validation Error',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/ValidationError'
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     '/nfts/{address}/': {
       get: {
         summary: 'Get NFT information by address and chainId',
@@ -1462,6 +1555,44 @@ module.exports = {
           properties: {
             price: { type: 'number' },
             lastUpdated: { type: 'string', format: 'date-time' }
+          }
+        }
+      },
+      EventLog: {
+        type: 'object',
+        properties: {
+          address: {
+            type: 'string'
+          },
+          blockNumber: {
+            type: 'string'
+          },
+          data: {
+            type: 'string'
+          },
+          gasPrice: {
+            type: 'string'
+          },
+          gasUsed: {
+            type: 'string'
+          },
+          logIndex: {
+            type: 'string'
+          },
+          timeStamp: {
+            type: 'string'
+          },
+          topics: {
+            type: 'array',
+            items: {
+              type: 'string'
+            }
+          },
+          transactionHash: {
+            type: 'string'
+          },
+          transactionIndex: {
+            type: 'string'
           }
         }
       },
