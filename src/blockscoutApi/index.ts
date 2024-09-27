@@ -5,7 +5,7 @@ import {
   ServerResponse, ServerResponseV2, TokenBalanceServerResponse,
   TokenInfoResponse,
   TokenServerResponse, TokenTransferApi, TransactionServerResponse,
-  TransactionsServerResponse
+  TransactionsServerResponse, BlockscoutTransactionResponse
 } from './types'
 import {
   fromApiToInternalTransaction, fromApiToNft, fromApiToNftOwner, fromApiToRtbcBalance, fromApiToTEvents,
@@ -127,12 +127,33 @@ export class BlockscoutAPI extends DataSource {
     address, topic0, toBlock = 'latest', fromBlock
   }: Omit<GetEventLogsByAddressAndTopic0, 'chainId'>) {
     let fromBlockToUse = fromBlock
-    if (!fromBlock) {
-      const tx = await this.getTransactionsByAddress(address)
-      // @ts-ignore ignored because it's using never as type
-      const lastTx = tx.data.pop() // The last tx is the first transaction
 
-      if (lastTx) fromBlockToUse = lastTx.blockNumber.toString()
+    if (!fromBlock) {
+      try {
+        const params = {
+          module: 'account',
+          action: 'txlist',
+          address,
+          sort: 'asc'
+        }
+        const response = await this.axios?.get<BlockscoutTransactionResponse>(this.url, { params })
+
+        if (!response?.data) {
+          throw new Error('No response from Blockscout.')
+        }
+
+        const { result } = response.data
+
+        if (result?.length > 0) {
+          const firstTx = result[0]
+          fromBlockToUse = firstTx.blockNumber?.toString()
+        } else {
+          throw new Error('Blockscout returned no transactions for the given address.')
+        }
+      } catch (error) {
+        // An error happened, log it
+        console.error(`Failed to query Blockscout: ${error instanceof Error ? error.message : String(error)}`)
+      }
     }
 
     if (!fromBlockToUse) return []
