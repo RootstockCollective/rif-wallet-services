@@ -5,7 +5,7 @@ import {
   ServerResponse, ServerResponseV2, TokenBalanceServerResponse,
   TokenInfoResponse,
   TokenServerResponse, TokenTransferApi, TransactionServerResponse,
-  TransactionsServerResponse, BlockscoutTransactionResponse
+  TransactionsServerResponse, BlockscoutTransactionResponseTxResult
 } from './types'
 import {
   fromApiToInternalTransaction, fromApiToNft, fromApiToNftOwner, fromApiToRtbcBalance, fromApiToTEvents,
@@ -136,7 +136,7 @@ export class BlockscoutAPI extends DataSource {
           address,
           sort: 'asc'
         }
-        const response = await this.axios?.get<BlockscoutTransactionResponse>(this.url, { params })
+        const response = await this.axios?.get<ServerResponse<BlockscoutTransactionResponseTxResult>>(this.url, { params })
 
         if (!response?.data) {
           throw new Error('No response from Blockscout.')

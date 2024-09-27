@@ -293,5 +293,3 @@ export interface BlockscoutTransactionResponseTxResult {
   txreceipt_status: string;
   value: string;
 }
-
-export type BlockscoutTransactionResponse = ServerResponse<BlockscoutTransactionResponseTxResult>
