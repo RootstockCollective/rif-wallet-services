@@ -294,8 +294,4 @@ export interface BlockscoutTransactionResponseTxResult {
   value: string;
 }
 
-export interface BlockscoutTransactionResponse {
-  message: string;
-  result: BlockscoutTransactionResponseTxResult[];
-  status: string;
-}
+export type BlockscoutTransactionResponse = ServerResponse<BlockscoutTransactionResponseTxResult>
