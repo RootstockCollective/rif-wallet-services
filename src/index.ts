@@ -104,6 +104,15 @@ async function main () {
     res.status(200).end(`OK: ${environment.PORT}`)
   })
 
+  app.get('/', (_, res) => {
+    const envs = {
+      DEFAULT_CURRENCY: environment.DEFAULT_CONVERT_FIAT,
+      CHAIN_IDS: environment.NETWORKS.map(network => network.CHAIN_ID),
+      PROFILE: profile
+    }
+    res.status(200).end(JSON.stringify(envs))
+  })
+
   const httpsAPI : HttpsAPI = new HttpsAPI({
     app,
     dataSourceMapping,
