@@ -18,6 +18,9 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    environment:
+      name: prod
+
     permissions:
       id-token: write
       contents: read
