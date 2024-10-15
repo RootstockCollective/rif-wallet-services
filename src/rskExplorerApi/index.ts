@@ -144,7 +144,11 @@ export class RSKExplorerAPI extends DataSource {
     throw new Error('Feature not supported')
   }
 
-  getNftHoldersData () {
+  getNftHoldersData () { 
+    throw new Error('Feature not supported')
+  }
+  
+  getTokenHoldersByAddress () {
     throw new Error('Feature not supported')
   }
 }
