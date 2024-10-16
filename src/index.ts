@@ -17,7 +17,7 @@ import { RSKExplorerAPI } from './rskExplorerApi'
 import { BlockscoutAPI } from './blockscoutApi'
 
 async function main () {
-  const profile = process.env.PROFILE || 'wallet'
+  const profile = process.env.PROFILE || 'dao'
 
   dotenv.config({
     path: `.env.${profile}`

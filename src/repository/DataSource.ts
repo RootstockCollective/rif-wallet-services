@@ -30,6 +30,8 @@ export abstract class DataSource {
   abstract getNftOwnedByAddress(address: string, nft: string);
   abstract getEventLogsByAddressAndTopic0({ address, topic0, toBlock, fromBlock } :
     Omit<GetEventLogsByAddressAndTopic0, 'chainId'>);
+
+  abstract getNftHoldersData(nftAddress: string);
 }
 
 export type RSKDatasource = {

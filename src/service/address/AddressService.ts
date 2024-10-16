@@ -152,4 +152,9 @@ export class AddressService {
     const dataSource = this.dataSourceMapping[chainId]
     return dataSource.getEventLogsByAddressAndTopic0(rest)
   }
+
+  async getNftHoldersData ({ chainId, address, ...rest }: GetTokensByAddress) {
+    const dataSource = this.dataSourceMapping[chainId]
+    return dataSource.getNftHoldersData(address)
+  }
 }
