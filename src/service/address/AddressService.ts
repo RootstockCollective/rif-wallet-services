@@ -3,6 +3,7 @@ import { isMyTransaction } from '../transaction/utils'
 import { IApiTransactions, IEvent, IInternalTransaction } from '../../rskExplorerApi/types'
 import { LastPrice } from '../price/lastPrice'
 import { fromApiToRtbcBalance } from '../../rskExplorerApi/utils'
+import { NextPageParams } from '../../blockscoutApi/types'
 
 interface AddressServiceDependencies {
   dataSourceMapping: RSKDatasource
@@ -40,6 +41,8 @@ export interface GetEventLogsByAddressAndTopic0 {
   chainId: string
   fromBlock?: string
 }
+
+export interface GetNftHoldersData { address: string, nextPageParams?: NextPageParams, chainId: string }
 
 type GetBalancesTransactionsPricesByAddress = {
   chainId: string
@@ -153,8 +156,8 @@ export class AddressService {
     return dataSource.getEventLogsByAddressAndTopic0(rest)
   }
 
-  async getNftHoldersData ({ chainId, address, ...rest }: GetTokensByAddress) {
+  async getNftHoldersData ({ chainId, ...rest }: GetNftHoldersData) {
     const dataSource = this.dataSourceMapping[chainId]
-    return dataSource.getNftHoldersData(address)
+    return dataSource.getNftHoldersData(rest)
   }
 }

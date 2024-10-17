@@ -293,3 +293,24 @@ export interface BlockscoutTransactionResponseTxResult {
   txreceipt_status: string;
   value: string;
 }
+
+export interface NftTokenHolderAddress {
+  ens_domain_name: string;
+  hash: string;
+  implementations: any[];
+  is_contract: boolean;
+  is_verified: boolean;
+  metadata: null;
+  name: null;
+  private_tags: any[];
+  proxy_type: null;
+  public_tags: any[];
+  watchlist_names: any[];
+}
+
+export interface NftTokenHoldersResponse {
+  address: NftTokenHolderAddress;
+  token: Token;
+  token_id: null;
+  value: string;
+}

@@ -5,13 +5,14 @@ import {
   ServerResponse, ServerResponseV2, TokenBalanceServerResponse,
   TokenInfoResponse,
   TokenServerResponse, TokenTransferApi, TransactionServerResponse,
-  TransactionsServerResponse, BlockscoutTransactionResponseTxResult
+  TransactionsServerResponse, BlockscoutTransactionResponseTxResult,
+  NftTokenHoldersResponse
 } from './types'
 import {
   fromApiToInternalTransaction, fromApiToNft, fromApiToNftOwner, fromApiToRtbcBalance, fromApiToTEvents,
   fromApiToTokenWithBalance, fromApiToTokens, fromApiToTransaction
 } from './utils'
-import { GetEventLogsByAddressAndTopic0, getNftHoldersData } from '../service/address/AddressService'
+import { GetEventLogsByAddressAndTopic0, GetNftHoldersData } from '../service/address/AddressService'
 
 export class BlockscoutAPI extends DataSource {
   private chainId: number
@@ -170,19 +171,25 @@ export class BlockscoutAPI extends DataSource {
       .catch(() => [])
   }
 
-  async getNftHoldersData ({ nftAddress, nextPageParams }: getNftHoldersData) {
-    // const url = `${this.url}?module=token&action=getTokenHolders&contractaddress=${nftAddress.toLowerCase()}`\
-    const url = `${this.url}/v2/tokens/${nftAddress.toLowerCase()}/holders`
+  async getNftHoldersData ({ address, nextPageParams }: GetNftHoldersData) {
+    const url = `${this.url}/v2/tokens/${address.toLowerCase()}/holders`
     console.log('getting nft holders data')
     try {
-      const result = await this.axios?.get<ServerResponseV2<NFTInstanceResponse>>(url, {
+      const response = await this.axios?.get<ServerResponseV2<NftTokenHoldersResponse>>(url, {
         params: nextPageParams
       })
-      console.log('result', result?.data)
-      return result?.data.items || []
+
+      if (response?.status === 200) {
+        return response.data
+      }
+      return {
+        items: [],
+        next_page_params: null,
+        error: `Blockscout error with status ${response?.status}`
+      }
     } catch (error) {
-      console.log('Failed to get NFT holders data', error)
-      throw new Error('Failed to get NFT holders data')
+      console.log(typeof error, error)
+      throw new Error(`Failed to get NFT holders data: ${error instanceof Error ? error.message : String(error)}`)
     };
   }
 }
