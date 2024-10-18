@@ -152,8 +152,6 @@ export class HttpsAPI {
           addressSchema.validateSync({ address })
           const nft = await this.addressService.getNftInfo({ chainId: chainId as string, address }).catch(nextFunction)
           return this.responseJsonOk(res)(nft)
-          // const nftHolders = await this.addressService.getNftHoldersData({ chainId: chainId as string, address: address }).catch(nextFunction)
-          // return this.responseJsonOk(res)(nftHolders)
         } catch (e) {
           this.handleValidationError(e, res)
         }
