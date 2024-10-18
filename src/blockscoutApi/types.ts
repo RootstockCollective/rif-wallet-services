@@ -327,6 +327,7 @@ export interface NftTokenHoldersResponse {
 
 export interface NftTokenHoldersTransformedResponse {
   owner: string;
+  ens_domain_name: string;
   id: string;
   image_url: string;
   metadata: {

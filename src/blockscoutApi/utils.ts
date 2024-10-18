@@ -246,6 +246,7 @@ NftTokenHoldersTransformedResponse[] =>
   (
     nftHolders.map(nft => ({
       owner: nft.owner.hash,
+      ens_domain_name: nft.owner.ens_domain_name,
       id: nft.id,
       image_url: nft.image_url,
       metadata: nft.metadata
