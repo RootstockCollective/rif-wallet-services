@@ -294,7 +294,7 @@ export interface BlockscoutTransactionResponseTxResult {
   value: string;
 }
 
-export interface NftTokenHolderAddress {
+export interface NftTokenHolderOwner {
   ens_domain_name: string;
   hash: string;
   implementations: any[];
@@ -309,8 +309,31 @@ export interface NftTokenHolderAddress {
 }
 
 export interface NftTokenHoldersResponse {
-  address: NftTokenHolderAddress;
+  owner: NftTokenHolderOwner;
   token: Token;
-  token_id: null;
-  value: string;
+  animation_url: null;
+  external_app_url: string;
+  id: string;
+  image_url: string;
+  is_unique: string;
+  metadata: {
+        creator: string;
+        description: string;
+        external_url: string;
+        image: string;
+        name: string;
+  }
+}
+
+export interface NftTokenHoldersTransformedResponse {
+  owner: string;
+  id: string;
+  image_url: string;
+  metadata: {
+        creator: string;
+        description: string;
+        external_url: string;
+        image: string;
+        name: string;
+  }
 }
