@@ -241,7 +241,7 @@ export const fromApiToNftOwner = (address: string, nfts: NFTInstanceResponse[]):
 
 )
 
-export const nftHolderTransformedData = (nftHolders: NftTokenHoldersResponse[]):
+export const transformResponseToNftHolder = (nftHolders: NftTokenHoldersResponse[]):
 NftTokenHoldersTransformedResponse[] =>
   (
     nftHolders.map(nft => ({

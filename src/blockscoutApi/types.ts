@@ -294,22 +294,8 @@ export interface BlockscoutTransactionResponseTxResult {
   value: string;
 }
 
-export interface NftTokenHolderOwner {
-  ens_domain_name: string;
-  hash: string;
-  implementations: any[];
-  is_contract: boolean;
-  is_verified: boolean;
-  metadata: null;
-  name: null;
-  private_tags: any[];
-  proxy_type: null;
-  public_tags: any[];
-  watchlist_names: any[];
-}
-
 export interface NftTokenHoldersResponse {
-  owner: NftTokenHolderOwner;
+  owner: Account;
   token: Token;
   animation_url: null;
   external_app_url: string;

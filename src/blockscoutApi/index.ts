@@ -10,7 +10,7 @@ import {
 } from './types'
 import {
   fromApiToInternalTransaction, fromApiToNft, fromApiToNftOwner, fromApiToRtbcBalance, fromApiToTEvents,
-  fromApiToTokenWithBalance, fromApiToTokens, fromApiToTransaction, nftHolderTransformedData
+  fromApiToTokenWithBalance, fromApiToTokens, fromApiToTransaction, transformResponseToNftHolder
 } from './utils'
 import { GetEventLogsByAddressAndTopic0, GetNftHoldersData } from '../service/address/AddressService'
 
@@ -175,17 +175,16 @@ export class BlockscoutAPI extends DataSource {
 
   async getNftHoldersData ({ address, nextPageParams }: GetNftHoldersData) {
     const url = `${this.url}/v2/tokens/${address.toLowerCase()}/instances`
-    console.log('getting nft holders data')
     try {
       const response = await this.axios?.get<ServerResponseV2<NftTokenHoldersResponse>>(url, {
         params: nextPageParams
       })
 
       if (response?.status === 200) {
-        const transformedResponse = nftHolderTransformedData(response.data.items)
+        const nftHolders = transformResponseToNftHolder(response.data.items)
         return {
           // Reverse the array to show the holders starting from the first
-          items: transformedResponse.reverse(),
+          items: nftHolders.reverse(),
           next_page_params: response.data.next_page_params
         }
       }
