@@ -1,5 +1,3 @@
-const { id } = require("ethers");
-
 module.exports = {
   openapi: '3.0.3',
   info: {
