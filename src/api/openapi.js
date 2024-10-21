@@ -1,3 +1,5 @@
+const { id } = require("ethers");
+
 module.exports = {
   openapi: '3.0.3',
   info: {
@@ -521,6 +523,69 @@ module.exports = {
               'application/json': {
                 schema: {
                   $ref: '#/components/schemas/INft'
+                }
+              }
+            }
+          },
+          400: {
+            description: 'Validation Error',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/ValidationError'
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    '/nfts/{address}/holders': {
+      get: {
+        summary: 'Get NFT holders by address and chainId',
+        tags: [
+          'NFT'
+        ],
+        parameters: [
+          {
+            name: 'address',
+            in: 'path',
+            required: true,
+            description: 'NFT address',
+            schema: {
+              type: 'string'
+            },
+            example: '0xa3076bcaCc7112B7fa7c5A87CF32275296d85D64'
+          },
+          {
+            name: 'chainId',
+            in: 'query',
+            description: 'Chain Id identifies the network',
+            required: false,
+            schema: {
+              type: 'string',
+              default: '31'
+            },
+            examples: {
+              'RSK Testnet': {
+                value: '31'
+              },
+              'RSK Mainnet': {
+                value: '30'
+              }
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    $ref: '#/components/schemas/INftHolder'
+                  }
                 }
               }
             }
@@ -1648,6 +1713,43 @@ module.exports = {
           },
           metadata: {
             type: 'object'
+          }
+        }
+      },
+      INftHolder: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string'
+          },
+          ens_domain_name: {
+            type: 'string'
+          },
+          id: {
+            type: 'string'
+          },
+          image_url: {
+            type: 'string'
+          },
+          metadata: {
+            type: 'object',
+            properties: {
+              creator: {
+                type: 'string'
+              },
+              description: {
+                type: 'string'
+              },
+              external_url: {
+                type: 'string'
+              },
+              image: {
+                type: 'string'
+              },
+              name: {
+                type: 'string'
+              }
+            }
           }
         }
       },
