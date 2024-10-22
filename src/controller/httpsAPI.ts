@@ -250,6 +250,21 @@ export class HttpsAPI {
     this.app.use('/bitcoin', BitcoinRouter(this.responseJsonOk, this.bitcoinMapping))
     this.app.get('/dapps', (_: Request, res: Response) => this.responseJsonOk(res)(registeredDapps))
 
+    this.app.get('/nfts/:address/holders',
+      async ({ params: { address }, query: { chainId = '31', ...rest } } : Request, res: Response,
+        nextFunction: NextFunction) => {
+        try {
+          chainIdSchema.validateSync({ chainId })
+          addressSchema.validateSync({ address })
+          const nftHolders = await this.addressService
+            .getNftHoldersData({ chainId: chainId as string, address, ...rest })
+            .catch(nextFunction)
+          return this.responseJsonOk(res)(nftHolders)
+        } catch (e) {
+          this.handleValidationError(e, res)
+        }
+      })
+
     this.app.use(errorHandler)
   }
 }

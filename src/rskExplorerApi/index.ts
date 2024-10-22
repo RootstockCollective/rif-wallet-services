@@ -143,4 +143,8 @@ export class RSKExplorerAPI extends DataSource {
   getEventLogsByAddressAndTopic0 () {
     throw new Error('Feature not supported')
   }
+
+  getNftHoldersData () {
+    throw new Error('Feature not supported')
+  }
 }

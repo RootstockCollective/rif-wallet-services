@@ -5,13 +5,14 @@ import {
   ServerResponse, ServerResponseV2, TokenBalanceServerResponse,
   TokenInfoResponse,
   TokenServerResponse, TokenTransferApi, TransactionServerResponse,
-  TransactionsServerResponse, BlockscoutTransactionResponseTxResult
+  TransactionsServerResponse, BlockscoutTransactionResponseTxResult,
+  NftTokenHoldersResponse
 } from './types'
 import {
   fromApiToInternalTransaction, fromApiToNft, fromApiToNftOwner, fromApiToRtbcBalance, fromApiToTEvents,
-  fromApiToTokenWithBalance, fromApiToTokens, fromApiToTransaction
+  fromApiToTokenWithBalance, fromApiToTokens, fromApiToTransaction, transformResponseToNftHolder
 } from './utils'
-import { GetEventLogsByAddressAndTopic0 } from '../service/address/AddressService'
+import { GetEventLogsByAddressAndTopic0, GetNftHoldersData } from '../service/address/AddressService'
 
 export class BlockscoutAPI extends DataSource {
   private chainId: number
@@ -136,7 +137,9 @@ export class BlockscoutAPI extends DataSource {
           address,
           sort: 'asc'
         }
-        const response = await this.axios?.get<ServerResponse<BlockscoutTransactionResponseTxResult>>(this.url, { params })
+        const response = await this.axios?.get<ServerResponse<BlockscoutTransactionResponseTxResult>>(
+          this.url, { params }
+        )
 
         if (!response?.data) {
           throw new Error('No response from Blockscout.')
@@ -168,5 +171,31 @@ export class BlockscoutAPI extends DataSource {
     return this.axios?.get<ServerResponse<TokenTransferApi>>(`${this.url}`, { params })
       .then(({ data }) => data.result)
       .catch(() => [])
+  }
+
+  async getNftHoldersData ({ address, nextPageParams }: GetNftHoldersData) {
+    const url = `${this.url}/v2/tokens/${address.toLowerCase()}/instances`
+    try {
+      const response = await this.axios?.get<ServerResponseV2<NftTokenHoldersResponse>>(url, {
+        params: nextPageParams
+      })
+
+      if (response?.status === 200) {
+        const nftHolders = transformResponseToNftHolder(response.data.items)
+        return {
+          // Reverse the array to show the holders starting from the first
+          items: nftHolders.reverse(),
+          next_page_params: response.data.next_page_params
+        }
+      }
+      return {
+        items: [],
+        next_page_params: null,
+        error: `Blockscout error with status ${response?.status}`
+      }
+    } catch (error) {
+      console.log(typeof error, error)
+      throw new Error(`Failed to get NFT holders data: ${error instanceof Error ? error.message : String(error)}`)
+    };
   }
 }

@@ -293,3 +293,34 @@ export interface BlockscoutTransactionResponseTxResult {
   txreceipt_status: string;
   value: string;
 }
+
+export interface NftTokenHoldersResponse {
+  owner: Account;
+  token: Token;
+  animation_url: null;
+  external_app_url: string;
+  id: string;
+  image_url: string;
+  is_unique: string;
+  metadata: {
+        creator: string;
+        description: string;
+        external_url: string;
+        image: string;
+        name: string;
+  }
+}
+
+export interface NftTokenHoldersTransformedResponse {
+  owner: string;
+  ens_domain_name: string;
+  id: string;
+  image_url: string;
+  metadata: {
+        creator: string;
+        description: string;
+        external_url: string;
+        image: string;
+        name: string;
+  }
+}

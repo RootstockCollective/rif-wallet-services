@@ -2,7 +2,9 @@ import {
   IApiToken, ITokenWithBalance, InternalTransaction,
   NFTInstanceResponse,
   INftOwner,
-  Token, TokenInfoResponse, TokenTransferApi, TransactionServerResponse
+  Token, TokenInfoResponse, TokenTransferApi, TransactionServerResponse,
+  NftTokenHoldersResponse,
+  NftTokenHoldersTransformedResponse
 } from './types'
 import tokens from '@rsksmart/rsk-contract-metadata'
 import { toChecksumAddress } from '@rsksmart/rsk-utils'
@@ -238,3 +240,15 @@ export const fromApiToNftOwner = (address: string, nfts: NFTInstanceResponse[]):
     }))
 
 )
+
+export const transformResponseToNftHolder = (nftHolders: NftTokenHoldersResponse[]):
+NftTokenHoldersTransformedResponse[] =>
+  (
+    nftHolders.map(nft => ({
+      owner: nft.owner.hash,
+      ens_domain_name: nft.owner.ens_domain_name,
+      id: nft.id,
+      image_url: nft.image_url,
+      metadata: nft.metadata
+    }))
+  )
