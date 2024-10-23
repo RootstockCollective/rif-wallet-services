@@ -324,6 +324,7 @@ export interface NftTokenHoldersTransformedResponse {
         name: string;
   }
 }
+
 export interface TokenHolderAddress {
   ens_domain_name: string;
   hash: string;
@@ -338,23 +339,9 @@ export interface TokenHolderAddress {
   watchlist_names: any[];
 }
 
-export interface TokenHolderToken {
-  address: string;
-  circulating_market_cap: null;
-  decimals: string;
-  exchange_rate: null;
-  holders: string;
-  icon_url: null;
-  name: string;
-  symbol: string;
-  total_supply: string;
-  type: string;
-  volume_24h: null;
-}
-
 export interface TokenHoldersResponse {
   address: TokenHolderAddress;
   token: Token;
-  token_id: null;
+  token_id: string;
   value: string;
 }

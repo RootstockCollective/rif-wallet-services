@@ -12,10 +12,15 @@ import {
   fromApiToInternalTransaction, fromApiToNft, fromApiToNftOwner, fromApiToRtbcBalance, fromApiToTEvents,
   fromApiToTokenWithBalance, fromApiToTokens, fromApiToTransaction, transformResponseToNftHolder
 } from './utils'
-import { GetEventLogsByAddressAndTopic0, GetNftHoldersData, GetTokenHoldersByAddress } from '../service/address/AddressService'
+import {
+  GetEventLogsByAddressAndTopic0, GetNftHoldersData,
+  GetTokenHoldersByAddress
+} from '../service/address/AddressService'
+import { AxiosCacheInstance, setupCache } from 'axios-cache-interceptor'
 
 export class BlockscoutAPI extends DataSource {
   private chainId: number
+  private axiosCache: AxiosCacheInstance
   private errorHandling = (e) => {
     console.error(e)
     return []
@@ -24,6 +29,10 @@ export class BlockscoutAPI extends DataSource {
   constructor (apiURL: string, chainId: number, axios: typeof _axios, id: string) {
     super(apiURL, id, axios)
     this.chainId = chainId
+    this.axiosCache = setupCache(_axios.create(), {
+      ttl: 1000 * 60,
+      interpretHeader: false
+    })
   }
 
   getTokens () {
@@ -176,7 +185,8 @@ export class BlockscoutAPI extends DataSource {
   async getTokenHoldersByAddress ({ address, nextPageParams }: GetTokenHoldersByAddress) {
     try {
       const url = `${this.url}/v2/tokens/${address}/holders`
-      const response = await this.axios?.get<ServerResponseV2<TokenHoldersResponse>>(url, { params: nextPageParams })
+      const response = await this.axiosCache.get<ServerResponseV2<TokenHoldersResponse>>(url,
+        { params: nextPageParams, validateStatus: (status) => status <= 500 })
       if (response?.status === 200) {
         return response.data
       }
@@ -186,8 +196,7 @@ export class BlockscoutAPI extends DataSource {
         error: `Blockscout error with status ${response?.status}`
       }
     } catch (error) {
-      console.log(typeof error, error)
-      // @TODO handle error
+      console.error(typeof error, error)
       return {
         items: [],
         next_page_params: null,
@@ -196,11 +205,12 @@ export class BlockscoutAPI extends DataSource {
     }
   }
 
-  async getNftHoldersData ({ address, nextPageParams }: GetNftHoldersData) {
+  async getNftInstancesByAddress ({ address, nextPageParams }: GetNftHoldersData) {
     const url = `${this.url}/v2/tokens/${address.toLowerCase()}/instances`
     try {
       const response = await this.axios?.get<ServerResponseV2<NftTokenHoldersResponse>>(url, {
-        params: nextPageParams
+        params: nextPageParams,
+        validateStatus: (status) => status <= 500
       })
 
       if (response?.status === 200) {
@@ -217,7 +227,7 @@ export class BlockscoutAPI extends DataSource {
         error: `Blockscout error with status ${response?.status}`
       }
     } catch (error) {
-      console.log(typeof error, error)
+      console.error(typeof error, error)
       throw new Error(`Failed to get NFT holders data: ${error instanceof Error ? error.message : String(error)}`)
     };
   }

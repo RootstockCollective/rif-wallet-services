@@ -61,6 +61,7 @@ export class HttpsAPI {
     })
 
     const whilelist = [
+      'https://dev.rws.app.rootstockcollective.xyz',
       'https://rws.app.rootstockcollective.xyz',
       'https://app.rootstockcollective.xyz',
       'https://testnet.app.rootstockcollective.xyz',

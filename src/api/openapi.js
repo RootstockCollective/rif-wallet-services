@@ -11,6 +11,10 @@ module.exports = {
       description: 'Local server'
     },
     {
+      url: 'https://dev.rws.app.rootstockcollective.xyz',
+      description: 'DAO TestNet'
+    },
+    {
       url: 'https://rws.app.rootstockcollective.xyz',
       description: 'DAO TestNet'
     }
@@ -656,6 +660,77 @@ module.exports = {
                   type: 'array',
                   items: {
                     $ref: '#/components/schemas/INftOwner'
+                  }
+                }
+              }
+            }
+          },
+          400: {
+            description: 'Validation Error',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/ValidationError'
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    '/address/{address}/holders': {
+      get: {
+        summary: 'Get Token holders that belong to an address by chainId',
+        tags: [
+          'Tokens'
+        ],
+        parameters: [
+          {
+            name: 'address',
+            in: 'path',
+            required: true,
+            description: 'NFT address',
+            schema: {
+              type: 'string'
+            },
+            example: '0xa3076bcaCc7112B7fa7c5A87CF32275296d85D64'
+          },
+          {
+            name: 'chainId',
+            in: 'query',
+            description: 'Chain Id identifies the network',
+            required: false,
+            schema: {
+              type: 'string',
+              default: '31'
+            },
+            examples: {
+              'RSK Testnet': {
+                value: '31'
+              },
+              'RSK Mainnet': {
+                value: '30'
+              }
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: 'successful operation',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    items: {
+                      type: 'array',
+                      items: {
+                        $ref: '#/components/schemas/TokenHolder'
+                      }
+                    },
+                    next_page_params: {
+                      $ref: '#/components/schemas/NextPage'
+                    }
                   }
                 }
               }
@@ -1751,6 +1826,127 @@ module.exports = {
           }
         }
       },
+      TokenHolder: {
+        type: 'object',
+        properties: {
+          address: {
+            $ref: '#/components/schemas/AddressParam'
+          },
+          value: {
+            type: 'string',
+            example: '10000'
+          },
+          token_id: {
+            type: 'string',
+            example: '10000'
+          },
+          token: {
+            $ref: '#/components/schemas/TokenInfo'
+          }
+        }
+      },
+      AddressParam: {
+        type: 'object',
+        properties: {
+          hash: {
+            type: 'string',
+            example: '0xEb533ee5687044E622C69c58B1B12329F56eD9ad'
+          },
+          implementation_name: {
+            type: 'string',
+            example: 'implementationName'
+          },
+          name: {
+            type: 'string',
+            example: 'contractName'
+          },
+          is_contract: {
+            type: 'boolean'
+          },
+          private_tags: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/AddressTag'
+            }
+          },
+          watchlist_names: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/WatchlistName'
+            }
+          },
+          public_tags: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/AddressTag'
+            }
+          },
+          is_verified: {
+            type: 'boolean'
+          }
+        }
+      },
+      TokenInfo: {
+        type: 'object',
+        properties: {
+          circulating_market_cap: {
+            type: 'string',
+            example: '83606435600.3635'
+          },
+          icon_url: {
+            type: 'string',
+            example: 'https://raw.githubusercontent.com/trustwallet/assets/master' +
+              '/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png'
+          },
+          name: {
+            type: 'string',
+            example: 'Tether USD'
+          },
+          decimals: {
+            type: 'string',
+            example: '6'
+          },
+          symbol: {
+            type: 'string',
+            example: 'USDT'
+          },
+          address: {
+            type: 'string',
+            example: '0x394c399dbA25B99Ab7708EdB505d755B3aa29997'
+          },
+          type: {
+            type: 'string',
+            example: 'ERC-20'
+          },
+          holders: {
+            type: 'string',
+            example: '837494234523'
+          },
+          exchange_rate: {
+            type: 'string',
+            example: '0.99'
+          },
+          total_supply: {
+            type: 'string',
+            example: '10000000'
+          }
+        }
+      },
+      NextPage: {
+        type: 'object',
+        properties: {
+          address_hash: {
+            type: 'string'
+          },
+          items_count: {
+            type: 'integer'
+          },
+          value: {
+            type: 'integer'
+          }
+        }
+      },
+
       ValidationError: {
         type: 'object',
         properties: {

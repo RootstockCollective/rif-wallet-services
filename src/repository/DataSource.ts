@@ -1,8 +1,10 @@
 import _axios from 'axios'
 import { ethers } from 'ethers'
 import BitcoinCore from '../service/bitcoin/BitcoinCore'
-import { GetEventLogsByAddressAndTopic0, GetNftHoldersData, 
-  GetTokenHoldersByAddress } from '../service/address/AddressService'
+import {
+  GetEventLogsByAddressAndTopic0, GetNftHoldersData,
+  GetTokenHoldersByAddress
+} from '../service/address/AddressService'
 
 export abstract class DataSource {
   readonly url: string
@@ -32,7 +34,7 @@ export abstract class DataSource {
   abstract getEventLogsByAddressAndTopic0({ address, topic0, toBlock, fromBlock } :
     Omit<GetEventLogsByAddressAndTopic0, 'chainId'>);
 
-  abstract getNftHoldersData({ address }: Omit<GetNftHoldersData, 'chainId'>);
+  abstract getNftInstancesByAddress({ address }: Omit<GetNftHoldersData, 'chainId'>);
   abstract getTokenHoldersByAddress({ address }: Omit<GetTokenHoldersByAddress, 'chainId'>)
 }
 

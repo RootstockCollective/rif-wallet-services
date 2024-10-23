@@ -159,9 +159,9 @@ export class AddressService {
 
   async getNftHoldersData ({ chainId, ...rest }: GetNftHoldersData) {
     const dataSource = this.dataSourceMapping[chainId]
-    return dataSource.getNftHoldersData(rest)
+    return dataSource.getNftInstancesByAddress(rest)
   }
-  
+
   async getTokenHoldersByAddress ({ chainId, ...rest }: GetTokenHoldersByAddress) {
     const dataSource = this.dataSourceMapping[chainId]
     return dataSource.getTokenHoldersByAddress(rest)
