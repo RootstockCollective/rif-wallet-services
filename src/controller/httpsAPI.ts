@@ -61,6 +61,7 @@ export class HttpsAPI {
     })
 
     const whilelist = [
+      'https://dev.rws.app.rootstockcollective.xyz',
       'https://rws.app.rootstockcollective.xyz',
       'https://app.rootstockcollective.xyz',
       'https://testnet.app.rootstockcollective.xyz',
@@ -185,6 +186,25 @@ export class HttpsAPI {
               topic0: topic0 as string,
               fromBlock: fromBlock as string,
               toBlock: toBlock as string
+            })
+            .catch(nextFunction)
+          return this.responseJsonOk(res)(result)
+        } catch (e) {
+          this.handleValidationError(e, res)
+        }
+      })
+
+    this.app.get('/address/:address/holders',
+      async ({ params: { address }, query: { chainId = '31', ...rest } } : Request, res: Response,
+        nextFunction: NextFunction) => {
+        try {
+          chainIdSchema.validateSync({ chainId })
+          addressSchema.validateSync({ address })
+          const result = await this.addressService
+            .getTokenHoldersByAddress({
+              chainId: chainId as string,
+              address: address as string,
+              ...rest
             })
             .catch(nextFunction)
           return this.responseJsonOk(res)(result)

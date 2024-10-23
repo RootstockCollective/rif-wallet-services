@@ -324,3 +324,24 @@ export interface NftTokenHoldersTransformedResponse {
         name: string;
   }
 }
+
+export interface TokenHolderAddress {
+  ens_domain_name: string;
+  hash: string;
+  implementations: any[];
+  is_contract: boolean;
+  is_verified: boolean;
+  metadata: null;
+  name: null;
+  private_tags: any[];
+  proxy_type: null;
+  public_tags: any[];
+  watchlist_names: any[];
+}
+
+export interface TokenHoldersResponse {
+  address: TokenHolderAddress;
+  token: Token;
+  token_id: string;
+  value: string;
+}

@@ -43,6 +43,7 @@ export interface GetEventLogsByAddressAndTopic0 {
 }
 
 export interface GetNftHoldersData { address: string, nextPageParams?: NextPageParams, chainId: string }
+export interface GetTokenHoldersByAddress { address: string, nextPageParams?: NextPageParams, chainId: string }
 
 type GetBalancesTransactionsPricesByAddress = {
   chainId: string
@@ -158,6 +159,11 @@ export class AddressService {
 
   async getNftHoldersData ({ chainId, ...rest }: GetNftHoldersData) {
     const dataSource = this.dataSourceMapping[chainId]
-    return dataSource.getNftHoldersData(rest)
+    return dataSource.getNftInstancesByAddress(rest)
+  }
+
+  async getTokenHoldersByAddress ({ chainId, ...rest }: GetTokenHoldersByAddress) {
+    const dataSource = this.dataSourceMapping[chainId]
+    return dataSource.getTokenHoldersByAddress(rest)
   }
 }
