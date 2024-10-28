@@ -146,8 +146,13 @@ export class BlockscoutAPI extends DataSource {
           address,
           sort: 'asc'
         }
-        const response = await this.axios?.get<ServerResponse<BlockscoutTransactionResponseTxResult>>(
-          this.url, { params }
+        const response = await this.axiosCache.get<ServerResponse<BlockscoutTransactionResponseTxResult>>(
+          this.url, {
+            params,
+            cache: {
+              ttl: 1000 * 60 * 15
+            }
+          }
         )
 
         if (!response?.data) {
@@ -177,7 +182,7 @@ export class BlockscoutAPI extends DataSource {
       fromBlock: fromBlockToUse,
       topic0
     }
-    return this.axios?.get<ServerResponse<TokenTransferApi>>(`${this.url}`, { params })
+    return this.axiosCache.get<ServerResponse<TokenTransferApi>>(`${this.url}`, { params })
       .then(({ data }) => data.result)
       .catch(() => [])
   }
@@ -208,7 +213,7 @@ export class BlockscoutAPI extends DataSource {
   async getNftInstancesByAddress ({ address, nextPageParams }: GetNftHoldersData) {
     const url = `${this.url}/v2/tokens/${address.toLowerCase()}/instances`
     try {
-      const response = await this.axios?.get<ServerResponseV2<NftTokenHoldersResponse>>(url, {
+      const response = await this.axiosCache.get<ServerResponseV2<NftTokenHoldersResponse>>(url, {
         params: nextPageParams,
         validateStatus: (status) => status <= 500
       })
