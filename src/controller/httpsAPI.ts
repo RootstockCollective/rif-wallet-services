@@ -45,8 +45,9 @@ export class HttpsAPI {
 
   init () : void {
     const chainIdSchema = object({
-      chainId: string().optional()
-        .trim()
+      chainId: string()
+        .test('is-string', 'chainId must be a string', (value) => typeof value === 'string')
+        .transform(value => typeof value === 'string' ? value.trim() : value)
         .oneOf(Object.keys(this.dataSourceMapping), 'The current chainId is not supported')
     })
     const addressSchema = object({
