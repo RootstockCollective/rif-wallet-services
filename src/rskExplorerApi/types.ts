@@ -140,3 +140,51 @@ export interface IInternalTransaction {
 export interface InternalTransactionServerResponse {
   data: IInternalTransaction[]
 }
+
+export interface Pages {
+  sortDir: number;
+  limit: number;
+  next: null;
+  prev: null;
+  page: number;
+  total: null;
+  pages: any[];
+}
+
+export interface Datum {
+  eventId: string;
+  address: string;
+  blockHash: string;
+  blockNumber: number;
+  data: string;
+  event: null | string;
+  logIndex: number;
+  timestamp: number;
+  transactionHash: string;
+  transactionIndex: number;
+  txStatus: string;
+  topics: string[];
+  _addresses: string[];
+  abi: any;
+  _addressData: any;
+  args?: string[];
+  signature?: string;
+}
+
+export interface Events {
+  pages: Pages;
+  data: Datum[];
+}
+
+export interface ExplorerEvent {
+  address: string;
+  blockNumber: string;
+  data: string;
+  gasPrice: string;
+  gasUsed: string;
+  logIndex: string;
+  timeStamp: string;
+  topics: Array<null | string>;
+  transactionHash: string;
+  transactionIndex: string;
+}
