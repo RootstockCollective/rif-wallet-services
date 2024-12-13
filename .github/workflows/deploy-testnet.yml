@@ -1,10 +1,8 @@
 name: Deploy to Amazon ECS
 
 on:
-  # release:
-  #   types: [released]
-  push:
-    branches: ["DEVOPS/cd-rws-testnet"]
+  release:
+    types: [released]
 
 env:
   AWS_REGION: us-east-1                
