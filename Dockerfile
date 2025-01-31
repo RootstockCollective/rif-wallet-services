@@ -1,4 +1,4 @@
-FROM node:18-slim
+FROM node:22-slim
 
 ARG arg_profile
 ENV PROFILE="$arg_profile"
