@@ -248,7 +248,16 @@ NftTokenHoldersTransformedResponse[] =>
       owner: nft.owner.hash,
       ens_domain_name: nft.owner.ens_domain_name,
       id: nft.id,
-      image_url: nft.image_url,
+      image_url: changeUrlGateway(nft.image_url),
       metadata: nft.metadata
     }))
   )
+
+const changeUrlGateway = (imageUrl: string) => {
+  const newBase = 'https://red-legislative-meadowlark-461.mypinata.cloud/ipfs/'
+  if (imageUrl && imageUrl.includes('/')) {
+    const ipfs = imageUrl.split('/').pop()
+    return `${newBase}${ipfs}`
+  }
+  return imageUrl
+}
