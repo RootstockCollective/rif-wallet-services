@@ -178,8 +178,12 @@ export class HttpsAPI {
       })
 
     this.app.get('/address/:address/eventsByTopic0',
-      async ({ params: { address }, query: { chainId = '31', topic0, fromBlock, toBlock } } : Request, res: Response,
-        nextFunction: NextFunction) => {
+      async ({
+        params: { address },
+        query: { chainId = '31', topic0, fromBlock, toBlock, topic1, topic01Opr }
+      } : Request,
+      res: Response,
+      nextFunction: NextFunction) => {
         try {
           chainIdSchema.validateSync({ chainId })
           addressSchema.validateSync({ address })
@@ -188,6 +192,8 @@ export class HttpsAPI {
               chainId: chainId as string,
               address: address as string,
               topic0: topic0 as string,
+              topic1: topic1 as string,
+              topic01Opr: topic01Opr as string,
               fromBlock: fromBlock as string,
               toBlock: toBlock as string
             })

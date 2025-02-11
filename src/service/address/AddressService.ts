@@ -40,6 +40,8 @@ export interface GetEventLogsByAddressAndTopic0 {
   toBlock: string
   chainId: string
   fromBlock?: string
+  topic1?: string
+  topic01Opr?: string
 }
 
 export interface GetNftHoldersData { address: string, nextPageParams?: NextPageParams, chainId: string }
