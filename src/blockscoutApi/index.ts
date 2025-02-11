@@ -134,7 +134,7 @@ export class BlockscoutAPI extends DataSource {
   }
 
   async getEventLogsByAddressAndTopic0 ({
-    address, topic0, toBlock = 'latest', fromBlock
+    address, topic0, toBlock = 'latest', fromBlock, topic1, topic01Opr
   }: Omit<GetEventLogsByAddressAndTopic0, 'chainId'>) {
     let fromBlockToUse = fromBlock
 
@@ -174,13 +174,16 @@ export class BlockscoutAPI extends DataSource {
     }
 
     if (!fromBlockToUse) return []
-    const params = {
+    let params = {
       module: 'logs',
       action: 'getLogs',
       address: address.toLowerCase(),
       toBlock,
       fromBlock: fromBlockToUse,
       topic0
+    }
+    if (topic1 && topic01Opr) {
+      params = { ...params, ...{ topic1, topic0_1_opr: topic01Opr } }
     }
     return this.axiosCache.get<ServerResponse<TokenTransferApi>>(`${this.url}`, { params })
       .then(({ data }) => data.result)
