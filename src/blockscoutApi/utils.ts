@@ -253,11 +253,15 @@ NftTokenHoldersTransformedResponse[] =>
     }))
   )
 
-const changeUrlGateway = (imageUrl: string) => {
-  const newBase = 'https://red-legislative-meadowlark-461.mypinata.cloud/ipfs/'
-  if (imageUrl && imageUrl.includes('/')) {
-    const ipfs = imageUrl.split('/').pop()
-    return `${newBase}${ipfs}`
+export const changeUrlGateway = (imageUrl: string) => {
+  const newBase = 'https://red-legislative-meadowlark-461.mypinata.cloud'
+  if (imageUrl.startsWith('http')) {
+    const parsedUrl = new URL(imageUrl)
+    return `${newBase}${parsedUrl.pathname}`
+  }
+  if (imageUrl.startsWith('ipfs')) {
+    const parsedUrl = new URL(imageUrl)
+    return `${newBase}/${parsedUrl.host}${parsedUrl.pathname}`
   }
   return imageUrl
 }
