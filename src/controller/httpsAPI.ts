@@ -7,10 +7,9 @@ import { BitcoinDatasource, RSKDatasource } from '../repository/DataSource'
 import swaggerUI from 'swagger-ui-express'
 import OpenApi from '../api/openapi'
 import BitcoinRouter from '../service/bitcoin/BitcoinRouter'
-import { ValidationError, object, string } from 'yup'
+import { ValidationError } from 'yup'
 import { AddressService } from '../service/address/AddressService'
-import { supportedFiat } from '../coinmarketcap/support'
-import { ethers } from 'ethers'
+import { addressSchema, generateChainIdSchema, currencySchema, topicSchema } from '../util/schema'
 
 interface HttpsAPIDependencies {
   app: Express,
@@ -44,22 +43,7 @@ export class HttpsAPI {
   }
 
   init () : void {
-    const chainIdSchema = object({
-      chainId: string()
-        .test('is-string', 'chainId must be a string', (value) => typeof value === 'string')
-        .transform(value => typeof value === 'string' ? value.trim() : value)
-        .oneOf(Object.keys(this.dataSourceMapping), 'The current chainId is not supported')
-    })
-    const addressSchema = object({
-      address: string().required('An address is invalid')
-        .trim()
-        .transform(address => ethers.isAddress(address.toLowerCase()) ? address : '')
-    }).required()
-    const currencySchema = object({
-      convert: string().optional()
-        .trim()
-        .oneOf(supportedFiat, 'The current currency is not supported')
-    })
+    const chainIdSchema = generateChainIdSchema(Object.keys(this.dataSourceMapping))
 
     const whilelist = [
       'https://dev.rws.app.rootstockcollective.xyz',
@@ -180,13 +164,14 @@ export class HttpsAPI {
     this.app.get('/address/:address/eventsByTopic0',
       async ({
         params: { address },
-        query: { chainId = '31', topic0, fromBlock, toBlock, topic1, topic01Opr }
+        query: { chainId = '31', topic0, fromBlock, toBlock, topic1, topic01Opr = 'and' }
       } : Request,
       res: Response,
       nextFunction: NextFunction) => {
         try {
           chainIdSchema.validateSync({ chainId })
           addressSchema.validateSync({ address })
+          topicSchema.validateSync({ topic0, topic1, topic01Opr })
           const result = await this.addressService
             .getEventLogsByAddressAndTopic0({
               chainId: chainId as string,

@@ -133,7 +133,7 @@ async function main () {
   webSocketAPI.init(io)
 
   server.listen(environment.PORT, () => {
-    console.log(`RIF Wallet services running on port ${environment.PORT}.`)
+    console.log(`DAO Backend services with profile ${profile} running on port ${environment.PORT}.`)
   })
 }
 
