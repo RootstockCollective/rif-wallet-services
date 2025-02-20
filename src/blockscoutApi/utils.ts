@@ -254,7 +254,7 @@ NftTokenHoldersTransformedResponse[] =>
   )
 
 export const changeUrlGateway = (imageUrl: string) => {
-  const newBase = 'https://red-legislative-meadowlark-461.mypinata.cloud'
+  const newBase = 'https://gateway.pinata.cloud'
   if (imageUrl.startsWith('http')) {
     const parsedUrl = new URL(imageUrl)
     return `${newBase}${parsedUrl.pathname}`
