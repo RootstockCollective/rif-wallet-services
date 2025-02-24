@@ -300,7 +300,7 @@ export interface NftTokenHoldersResponse {
   animation_url: null;
   external_app_url: string;
   id: string;
-  image_url: string;
+  image_url: string | null;
   is_unique: string;
   metadata: {
         creator: string;
@@ -315,7 +315,7 @@ export interface NftTokenHoldersTransformedResponse {
   owner: string;
   ens_domain_name: string;
   id: string;
-  image_url: string;
+  image_url: string | null;
   metadata: {
         creator: string;
         description: string;
