@@ -253,8 +253,11 @@ NftTokenHoldersTransformedResponse[] =>
     }))
   )
 
-export const changeUrlGateway = (imageUrl: string) => {
+export const changeUrlGateway = (imageUrl: string | null) => {
   const newBase = 'https://gateway.pinata.cloud'
+  if (!imageUrl) {
+    return imageUrl
+  }
   if (imageUrl.startsWith('http')) {
     const parsedUrl = new URL(imageUrl)
     return `${newBase}${parsedUrl.pathname}`
