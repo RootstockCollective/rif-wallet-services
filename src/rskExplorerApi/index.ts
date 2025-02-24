@@ -6,9 +6,14 @@ import {
   TokensServerResponse,
   RbtcBalancesServerResponse,
   TransactionServerResponse,
-  InternalTransactionServerResponse
+  InternalTransactionServerResponse,
+  Events
 } from './types'
-import { fromApiToRtbcBalance, fromApiToTEvents, fromApiToTokens, fromApiToTokenWithBalance } from './utils'
+import {
+  fromApiToRtbcBalance, fromApiToTEvents, fromApiToTokens,
+  fromApiToTokenWithBalance, fromExplorerApiToTEvents
+} from './utils'
+import { GetEventLogsByAddressAndTopic0 } from '../service/address/AddressService'
 
 export class RSKExplorerAPI extends DataSource {
   private chainId: number
@@ -140,8 +145,17 @@ export class RSKExplorerAPI extends DataSource {
     throw new Error('Feature not supported')
   }
 
-  getEventLogsByAddressAndTopic0 () {
-    throw new Error('Feature not supported')
+  getEventLogsByAddressAndTopic0 ({ address, topic0 } :
+    Omit<GetEventLogsByAddressAndTopic0, 'chainId'>) {
+    const params = {
+      module: 'events',
+      action: 'getEventsByAddress',
+      address: address.toLowerCase()
+    }
+    return this.axios!.get<Events>(this.url, { params })
+      .then(response => fromExplorerApiToTEvents(address, topic0,
+        response.data.data))
+      .catch(this.errorHandling)
   }
 
   getNftInstancesByAddress () {
